@@ -1,0 +1,5 @@
+#wd-courses-navigation>.list-group-item.active {
+    color: black;
+    background-color: white;
+    border-left: 3px solid black !important;
+}

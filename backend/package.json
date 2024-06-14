@@ -1,14 +1,38 @@
 {
-  "name": "backend",
+  "type": "module",
+  "name": "kanbas-node-server-app",
   "version": "1.0.0",
-  "description": "",
+  "description": "Node.js HTTP Web server for the Kanbas application",
   "main": "index.js",
   "scripts": {
+    "start": "node App.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ShqiW/kanbas-node-server-app.git"
+  },
+  "keywords": [
+    "Node",
+    "REST",
+    "Server",
+    "HTTP",
+    "Web",
+    "Development",
+    "CS5610",
+    "CS4550"
+  ],
+  "author": "ShqiW",
   "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ShqiW/kanbas-node-server-app/issues"
+  },
+  "homepage": "https://github.com/ShqiW/kanbas-node-server-app#readme",
   "dependencies": {
-    "express": "^4.19.2"
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "express-session": "^1.18.0",
+    "mongoose": "^8.4.1"
   }
 }

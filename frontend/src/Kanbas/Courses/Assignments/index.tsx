@@ -17,6 +17,7 @@ export default function Assignments() {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const { assignments } = useSelector((state) => state.assignmentsReducer);
+    console.log(assignments);
     const [showConfirmation, setShowConfirmation] = useState(false);
     const [assignmentToDelete, setAssignmentToDelete] = useState(null);
 
@@ -32,6 +33,8 @@ export default function Assignments() {
     useEffect(() => {
         fetchAssignments();
     }, [cid]);
+
+    console.log("after usefetch assignment", assignments);
 
 
     const handleDelete = (assignmentId) => {
@@ -53,7 +56,7 @@ export default function Assignments() {
 
     return (
 
-        console.log("Here is the assignments check", assignments),
+        //console.log("Here is the assignments check", assignments),
         <div className="flex-fill ms-5 me-10">
             <div id="wd-assignment" className="md-5">
                 <div className="wd-float-left d-flex" style={{ marginRight: '10px', verticalAlign: "middle" }}>

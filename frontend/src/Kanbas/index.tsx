@@ -7,6 +7,9 @@ import { useState, useEffect } from "react";
 import KanbasNavigation from "./Navigation";
 import store from "./store";
 import { Provider } from "react-redux"
+import Account from "./Courses/Account";
+import ProtectedRoute from "./ProtectedRoute";
+import Session from "./Courses/Account/Session";
 
 
 export default function Kanbas() {
@@ -30,12 +33,13 @@ export default function Kanbas() {
         const newCourse = await client.createCourse(course);
         setCourses([...courses, newCourse]);
     };
+
+
     const deleteCourse = async (courseId: string) => {
         await client.deleteCourse(courseId);
         setCourses(courses.filter(
             (c) => c._id !== courseId));
     };
-
 
 
     const updateCourse = async () => {
@@ -53,32 +57,38 @@ export default function Kanbas() {
 
     return (
         <Provider store={store}>
-            <div id="wd-kanbas" className="h-100">
-                <div className="d-flex h-100">
-                    <div className="d-none d-md-block bg-black">
-                        <KanbasNavigation />
+            <Session>
+                <div id="wd-kanbas" className="h-100">
+                    <div className="d-flex h-100">
+                        <div className="d-none d-md-block bg-black">
+                            <KanbasNavigation />
+                        </div>
+                        <div className="flex-fill p-4">
+                            <Routes>
+                                <Route path="/" element={<Navigate to="Dashboard" />} />
+                                <Route path="/Account/*" element={<Account />} />
+                                <Route path="Dashboard" element={
+                                    // <ProtectedRoute>
+                                    <Dashboard
+                                        courses={courses}
+                                        course={course}
+                                        setCourse={setCourse}
+                                        addNewCourse={addNewCourse}
+                                        deleteCourse={deleteCourse}
+                                        updateCourse={updateCourse} />
+                                    // </ProtectedRoute>
+                                } />
+                                <Route path="Courses/:cid/*" element={
+                                    // <ProtectedRoute>
+                                    <Courses courses={courses} />
+                                    // </ProtectedRoute>
+                                } />
+                            </Routes>
+
+                        </div>
                     </div>
-                    <div className="flex-fill p-4">
-                        <Routes>
-                            <Route path="/" element={<Navigate to="Dashboard" />} />
-                            <Route path="Account" element={<h1>Account</h1>} />
-                            <Route path="Dashboard" element={
-                                <Dashboard
-                                    courses={courses}
-                                    course={course}
-                                    setCourse={setCourse}
-                                    addNewCourse={addNewCourse}
-                                    deleteCourse={deleteCourse}
-                                    updateCourse={updateCourse} />
-                            } />
-                            <Route path="Courses/:cid/*" element={<Courses courses={courses} />} />
-
-
-                        </Routes>
-
-                    </div>
-                </div>
-            </div>;
+                </div>;
+            </Session>
         </Provider>
     )
 }

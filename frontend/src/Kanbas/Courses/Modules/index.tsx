@@ -13,6 +13,7 @@ export default function Modules() {
     const [moduleName, setModuleName] = useState("");
     const { modules } = useSelector((state: any) => state.modulesReducer);
     const dispatch = useDispatch();
+    
     const fetchModules = async () => {
         const modules = await client.findModulesForCourse(cid as string);
         dispatch(setModules(modules));
@@ -35,7 +36,7 @@ export default function Modules() {
 
     useEffect(() => {
         fetchModules();
-    }, []);
+    }, [cid]);
 
     return (
         <div id="wd-modules">

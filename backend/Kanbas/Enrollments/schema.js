@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 const enrollmentSchema = new mongoose.Schema({
-    user_id: String,
-    course_id: String,
+    user: String,
+    course: String,
 },
     { collection: "enrollments" });
 

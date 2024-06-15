@@ -14,15 +14,6 @@ import Session from "./Courses/Account/Session";
 
 export default function Kanbas() {
     const [courses, setCourses] = useState<any[]>([]);
-    const fetchCourses = async () => {
-        const courses = await client.fetchAllCourses();
-        setCourses(courses);
-    };
-    useEffect(() => {
-        fetchCourses();
-    }, []);
-
-
 
     const [course, setCourse] = useState<any>({
         _id: "1234", name: "New Course", number: "New Number",
@@ -68,20 +59,21 @@ export default function Kanbas() {
                                 <Route path="/" element={<Navigate to="Dashboard" />} />
                                 <Route path="/Account/*" element={<Account />} />
                                 <Route path="Dashboard" element={
-                                    // <ProtectedRoute>
-                                    <Dashboard
-                                        courses={courses}
-                                        course={course}
-                                        setCourse={setCourse}
-                                        addNewCourse={addNewCourse}
-                                        deleteCourse={deleteCourse}
-                                        updateCourse={updateCourse} />
-                                    // </ProtectedRoute>
+                                    <ProtectedRoute>
+                                        <Dashboard
+                                            courses={courses}
+                                            course={course}
+                                            setCourse={setCourse}
+                                            setCourses={setCourses}
+                                            addNewCourse={addNewCourse}
+                                            deleteCourse={deleteCourse}
+                                            updateCourse={updateCourse} />
+                                    </ProtectedRoute>
                                 } />
                                 <Route path="Courses/:cid/*" element={
-                                    // <ProtectedRoute>
-                                    <Courses courses={courses} />
-                                    // </ProtectedRoute>
+                                    <ProtectedRoute>
+                                        <Courses courses={courses} />
+                                    </ProtectedRoute>
                                 } />
                             </Routes>
 

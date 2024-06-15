@@ -1,17 +1,24 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import * as db from "../Database";
+import * as client from "../Courses/client";
 
 export default function Dashboard(
     {
-        courses, course, setCourse, addNewCourse,
+        courses, course, setCourse, setCourses, addNewCourse,
         deleteCourse, updateCourse
     }: {
-        courses: any[]; course: any; setCourse: (course: any) => void;
+        courses: any[]; course: any; setCourse: (course: any) => void; setCourses: (course: any) => void;
         addNewCourse: () => void; deleteCourse: (course: any) => void;
         updateCourse: () => void;
     }) {
-
+    const fetchCourses = async () => {
+        const newCourses = await client.fetchAllUserCourses();
+        setCourses(newCourses);
+    };
+    useEffect(() => {
+        fetchCourses();
+    }, []);
 
     return (
         <div id="wd-dashboard" className="p-4">

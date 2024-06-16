@@ -20,6 +20,7 @@ export default function Assignments() {
     console.log(assignments);
     const [showConfirmation, setShowConfirmation] = useState(false);
     const [assignmentToDelete, setAssignmentToDelete] = useState(null);
+    const [error, setError] = useState("");
 
     const fetchAssignments = async () => {
         try {
@@ -44,9 +45,14 @@ export default function Assignments() {
 
     const confirmDelete = async () => {
         if (assignmentToDelete) {
-            await client.deleteAssignment(assignmentToDelete);
-            dispatch(deleteAssignment(assignmentToDelete));
-            setShowConfirmation(false);
+            try {
+                await client.deleteAssignment(assignmentToDelete);
+                dispatch(deleteAssignment(assignmentToDelete));
+            } catch (err: any) {
+                setError(err.response.data)
+            } finally {
+                setShowConfirmation(false);
+            }
         }
     };
 
@@ -55,10 +61,9 @@ export default function Assignments() {
     };
 
     return (
-
-        //console.log("Here is the assignments check", assignments),
         <div className="flex-fill ms-5 me-10">
             <div id="wd-assignment" className="md-5">
+                {error && <div className="alert alert-danger">{error}</div>}
                 <div className="wd-float-left d-flex" style={{ marginRight: '10px', verticalAlign: "middle" }}>
                     <div className="input-group border me-2 rounded" style={{ height: "40px" }}>
                         <span className="input-group-text border-0" style={{ backgroundColor: "transparent" }}>

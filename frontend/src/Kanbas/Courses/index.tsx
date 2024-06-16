@@ -11,6 +11,8 @@ import Quizzes from "./Quizzes";
 import { FaAlignJustify } from "react-icons/fa6";
 import PeopleTable from "./People/Table";
 import QuizEditor from "./Quizzes/QuizEditor";
+import QuizDetailScreen from "./Quizzes/QuizDetailScreen";
+import QuizPreview from "./Quizzes/QuizPreview";
 
 
 export default function Courses({ courses }: { courses: any[] }) {
@@ -35,6 +37,7 @@ export default function Courses({ courses }: { courses: any[] }) {
                 </div>
                 <div className="flex-fill">
 
+
                     <Routes>
                         <Route path="Home" element={<Home />} />
                         <Route path="Modules" element={<Modules />} />
@@ -43,7 +46,9 @@ export default function Courses({ courses }: { courses: any[] }) {
                         <Route path="Assignments" element={<Assignments />} />
                         <Route path="Assignments/:aid" element={<AssignmentEditor />} />
                         <Route path="Quizzes" element={<Quizzes />} />
-                        <Route path="Quizzes/:qid" element={<QuizEditor />} />
+                        <Route path="Quizzes/:qid/edit" element={<QuizEditor />} />
+                        <Route path="Quizzes/:qid" element={<QuizDetailScreen />} />
+                        <Route path="Quizzes/:qid/preview" element={<QuizPreview />} />
                         <Route path="Grades" element={<Grades />} />
                         <Route path="People" element={<PeopleTable />} />
                         <Route path="People/:uid" element={<PeopleTable />} />

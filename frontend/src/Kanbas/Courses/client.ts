@@ -14,13 +14,18 @@ export const fetchUserEnrollments = async () => {
     return data
 }
 export const fetchUserCourses = async () => {
+    const courses = await fetchAllCourses()
     const enrollments = await fetchUserEnrollments()
-    let courses = []
-    for (let enrollment of enrollments) {
-        let course = await axios.get(`${COURSES_API}/${enrollment.course}`)
-        courses.push(course.data)
+    let userCourses = []
+    for (let course of courses) {
+        for (let enrollment of enrollments) {
+            if (course._id === enrollment.course) {
+                userCourses.push(course)
+                break
+            }
+        }
     }
-    return courses
+    return userCourses
 }
 export const fetchUserUnenrolledCourses = async () => {
     const courses = await fetchAllCourses()
@@ -46,11 +51,11 @@ export const createCourse = async (course: any) => {
     return response.data;
 };
 export const deleteCourse = async (id: string) => {
-    const response = await axios.delete(`${COURSES_API}/${id}`);
+    const response = await axiosWithCredentials.delete(`${ENROLLMENTS_API}/${id}`);
     return response.data;
 };
 export const updateCourse = async (course: any) => {
-    const response = await axios.put(`${COURSES_API}/${course.id}`, course);
+    const response = await axiosWithCredentials.put(`${COURSES_API}/${course._id}`, course);
     return response.data;
 };
 export const enrollCourse = async (course: any) => {

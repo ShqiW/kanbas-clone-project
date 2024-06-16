@@ -10,6 +10,7 @@ export default function AssignmentEditor() {
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const { assignments } = useSelector((state) => state.assignmentsReducer);
+    const [error, setError] = useState("");
 
     const initialAssignment = {
         title: "New Assignment",
@@ -46,19 +47,21 @@ export default function AssignmentEditor() {
             // Existing assignment
             client.updateAssignment(currentAssignment).then((updatedAssignment) => {
                 dispatch(updateAssignment(updatedAssignment));
-            });
+                navigate(`/Kanbas/Courses/${cid}/Assignments`);
+            }).catch(err => setError(err.response.data));
         } else {
             // New assignment, assign a unique _id
             client.createAssignment(cid, currentAssignment).then((newAssignment) => {
                 dispatch(addAssignment(newAssignment));
-            });
+                navigate(`/Kanbas/Courses/${cid}/Assignments`);
+            }).catch(err => setError(err.response.data));
         }
-        navigate(`/Kanbas/Courses/${cid}/Assignments`);
     };
 
     return (
         <div className="flex-fill">
             <div id="wd-assignments-editor" className="ms-5 me-5 row">
+                {error && <div className="alert alert-danger">{error}</div>}
                 <form>
                     <div>
                         <label htmlFor="title" className="col col-form-label">Assignment Name</label>

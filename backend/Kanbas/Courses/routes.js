@@ -4,7 +4,7 @@ import * as enrollmentsDao from "../Enrollments/dao.js"
 export default function CourseRoutes(app) {
     const createCourse = async (req, res) => {
         const currentUser = req.session["currentUser"];
-        if (!currentUser || currentUser.role != 'FACULTY') {
+        if (!currentUser || currentUser.role != "FACULTY") {
             res.sendStatus(401);
             return;
         }
@@ -24,12 +24,22 @@ export default function CourseRoutes(app) {
         res.json(course);
     }
     const updateCourse = async (req, res) => {
+        const currentUser = req.session["currentUser"];
+        if (!currentUser || currentUser.role != "FACULTY") {
+            res.sendStatus(401);
+            return;
+        }
         const { id } = req.params;
         const status = await dao.updateCourse(id, req.body)
         res.json(status)
     }
 
     const deleteCourse = async (req, res) => {
+        const currentUser = req.session["currentUser"];
+        if (!currentUser || currentUser.role !== "FACULTY") {
+            res.sendStatus(401);
+            return;
+        }
         const { id } = req.params;
         const status = await dao.deleteCourse(id, req.body)
         res.json(status)

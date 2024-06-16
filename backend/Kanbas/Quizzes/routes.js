@@ -41,5 +41,4 @@ export default function QuizRoutes(app) {
     app.get("/api/quizzes", findAllQuizzes);
     app.put("/api/quizzes/:qid", updateQuiz);
     app.delete("/api/quizzes/:qid", deleteQuiz)
-
 }

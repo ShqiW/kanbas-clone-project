@@ -10,6 +10,7 @@ import { Provider } from "react-redux"
 import Account from "./Courses/Account";
 import ProtectedRoute from "./ProtectedRoute";
 import Session from "./Courses/Account/Session";
+import Enrollment from "./Courses/Enrollment";
 
 
 export default function Kanbas() {
@@ -17,7 +18,7 @@ export default function Kanbas() {
 
     const [course, setCourse] = useState<any>({
         _id: "1234", name: "New Course", number: "New Number",
-        startDate: "2023-09-10", endDate: "2023-12-15", description: "New Description",
+        startDate: "2023-09-10", endDate: "2023-12-15", description: "New Description", img_url: "images/NEU.png"
     });
 
     const addNewCourse = async () => {
@@ -68,6 +69,11 @@ export default function Kanbas() {
                                             addNewCourse={addNewCourse}
                                             deleteCourse={deleteCourse}
                                             updateCourse={updateCourse} />
+                                    </ProtectedRoute>
+                                } />
+                                <Route path="Courses/enroll" element={
+                                    <ProtectedRoute>
+                                        <Enrollment />
                                     </ProtectedRoute>
                                 } />
                                 <Route path="Courses/:cid/*" element={

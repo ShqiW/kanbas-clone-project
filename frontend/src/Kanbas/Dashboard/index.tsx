@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import * as db from "../Database";
 import * as client from "../Courses/client";
+import { useSelector } from "react-redux";
 
 export default function Dashboard(
     {
@@ -13,9 +14,10 @@ export default function Dashboard(
         updateCourse: () => void;
     }) {
     const fetchCourses = async () => {
-        const newCourses = await client.fetchAllUserCourses();
+        const newCourses = await client.fetchUserCourses();
         setCourses(newCourses);
     };
+    const { currentUser } = useSelector((state: any) => state.accountReducer);
     useEffect(() => {
         fetchCourses();
     }, []);
@@ -23,18 +25,22 @@ export default function Dashboard(
     return (
         <div id="wd-dashboard" className="p-4">
             <h1 id="wd-dashboard-title">Dashboard</h1> <hr />
-            <h5>New Course
-                <button className="btn btn-primary float-end"
-                    id="wd-add-new-course-click"
-                    onClick={addNewCourse} > Add </button>
-                <button className="btn btn-warning float-end me-2"
-                    onClick={updateCourse} id="wd-update-course-click">
-                    Update
-                </button>
-            </h5><br />
-            <input value={course.name} className="form-control mb-2" onChange={(e) => setCourse({ ...course, name: e.target.value })} />
-            <textarea value={course.description} className="form-control" onChange={(e) => setCourse({ ...course, description: e.target.value })} />
-
+            {
+                currentUser ? currentUser.role === "STUDENT" ? <h5>Enroll in new courses
+                    <Link to="/Kanbas/Courses/enroll" className="btn btn-primary float-end">Enroll</Link>
+                </h5> : <h5>New Course
+                    <button className="btn btn-primary float-end"
+                        id="wd-add-new-course-click"
+                        onClick={addNewCourse} > Add </button>
+                    <button className="btn btn-warning float-end me-2"
+                        onClick={updateCourse} id="wd-update-course-click">
+                        Update
+                    </button>
+                    <br />
+                    <input value={course.name} className="form-control mb-2" onChange={(e) => setCourse({ ...course, name: e.target.value })} />
+                    <textarea value={course.description} className="form-control" onChange={(e) => setCourse({ ...course, description: e.target.value })} />
+                </h5> : null
+            }
             <hr />
 
             <h2 id="wd-dashboard-published">Published Courses ({courses.length})</h2> <hr />

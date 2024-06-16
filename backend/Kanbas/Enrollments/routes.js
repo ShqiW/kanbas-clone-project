@@ -2,8 +2,12 @@ import * as dao from "./dao.js";
 
 export default function EnrollmentRoutes(app) {
     const createEnrollment = async (req, res) => {
-        const course = await dao.createEnrollment(req.body)
-        res.json(course)
+        const currentUser = req.session["currentUser"];
+        const enrollment = await dao.createEnrollment({
+            user: currentUser._id,
+            course: req.body._id
+        })
+        res.json(enrollment)
     }
     const findEnrollmentByUser = async (req, res) => {
         const currentUser = req.session["currentUser"];

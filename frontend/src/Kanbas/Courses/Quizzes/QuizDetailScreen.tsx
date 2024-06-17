@@ -18,40 +18,36 @@ export default function QuizDetailScreen() {
     useEffect(() => {
         if (qid) {
             client.findQuizByQuizId(qid).then((quiz) => {
-                dispatch(setQuiz(quiz))
-
+                dispatch(setQuiz(quiz));
             });
         }
-    }, []);
+    }, [qid, dispatch]);
 
     return (
-
-
         <div className="container">
-            <div className="col-12 text-end">
-                {/* {user && user.role === "FACULTY" && (
+            <div className="col-12 text-center d-flex justify-content-center">
+                {user && user.role === "FACULTY" && (
                     <>
-                        {quiz.published ? ( */}
-                <button type="button" className="btn btn-success btn-sm rounded ps-3 pe-3 border">
-                    <FaCheckCircle /> Published
-                </button>
-                {/* ) : ( */}
-                <button type="button" className="btn btn-danger btn-sm rounded ps-3 pe-3 border">
-                    <FaBan /> Unpublished
-                </button>
-                {/* ) */}
-                {/* } */}
-                <button type="button" className="btn btn-sm rounded ps-3 pe-3 border" onClick={() => navigate(`/Kanbas/Courses/${cid}/Quizzes/${qid}/preview`)}>
-                    <BsPencil /> Preview
-                </button>
-                <button type="button" className="btn btn-sm rounded ps-3 pe-3 border" onClick={() => navigate(`/Kanbas/Courses/${cid}/Quizzes/${qid}/edit`)}>
-                    <BsPencil /> Edit
-                </button>
-                <button type="button" className="btn btn-light btn-sm rounded pl-0 ps-3 pe-3 border">
-                    <FaEllipsisVertical />
-                </button>
-                {/* </>
-                )} */}
+                        {quiz.published ? (
+                            <button type="button" className="btn btn-success btn-sm rounded ps-3 pe-3 border">
+                                <FaCheckCircle /> Published
+                            </button>
+                        ) : (
+                            <button type="button" className="btn btn-danger btn-sm rounded ps-3 pe-3 border">
+                                <FaBan /> Unpublished
+                            </button>
+                        )}
+                        <button type="button" className="btn btn-sm rounded ps-3 pe-3 border" onClick={() => navigate(`/Kanbas/Courses/${cid}/Quizzes/${qid}/preview`)}>
+                            <BsPencil /> Preview
+                        </button>
+                        <button type="button" className="btn btn-sm rounded ps-3 pe-3 border" onClick={() => navigate(`/Kanbas/Courses/${cid}/Quizzes/${qid}/edit`)}>
+                            <BsPencil /> Edit
+                        </button>
+                        <button type="button" className="btn btn-light btn-sm rounded ps-3 pe-3 border">
+                            <FaEllipsisVertical />
+                        </button>
+                    </>
+                )}
                 {user && user.role === "STUDENT" && (
                     <button type="button" className="btn btn-sm rounded ps-3 pe-3 border" onClick={() => navigate(`/Kanbas/Courses/${cid}/Quizzes/${qid}/preview`)}>
                         Take Quiz
@@ -59,36 +55,35 @@ export default function QuizDetailScreen() {
                 )}
             </div>
 
-            <div className="col-3 text-end">
-                <strong>Quiz Type</strong><br />
-                {/* <strong>Points</strong><br /> */}
-                <strong>Assignment Group</strong><br />
-                <strong>Shuffle Answers</strong><br />
-                <strong>Time Limit</strong><br />
-                <strong>Multiple Attempts</strong><br />
-                <strong>Show Correct Answers</strong><br />
-                <strong>Access Code</strong>
-                <strong>One Question at a Time</strong><br />
-                <strong>Webcam Required</strong><br />
-                <strong>Lock Questions After Answering</strong><br />
+            <div className="row mt-4">
+                <div className="col-3 text-end">
+                    <strong>Quiz Type</strong><br />
+                    <strong>Assignment Group</strong><br />
+                    <strong>Shuffle Answers</strong><br />
+                    <strong>Time Limit</strong><br />
+                    <strong>Multiple Attempts</strong><br />
+                    <strong>Show Correct Answers</strong><br />
+                    <strong>Access Code</strong><br />
+                    <strong>One Question at a Time</strong><br />
+                    <strong>Webcam Required</strong><br />
+                    <strong>Lock Questions After Answering</strong><br />
+                </div>
+                <div className="col-1"></div>
+                <div className="col-8">
+                    {quiz.type}<br />
+                    {quiz.assignmentGroup}<br />
+                    {quiz.shuffleAnswer ? 'Yes' : 'No'}<br />
+                    {quiz.timeLimit}<br />
+                    {quiz.multipleAttempts ? 'Yes' : 'No'}<br />
+                    {quiz.showCorrectAnswers ? 'Yes' : 'No'}<br />
+                    {quiz.accessCode}<br />
+                    {quiz.oneQuestionAtATime ? 'Yes' : 'No'}<br />
+                    {quiz.webcamRequired ? 'Yes' : 'No'}<br />
+                    {quiz.lockQuestionsAfterAnswering ? 'Yes' : 'No'}<br />
+                </div>
             </div>
-            <div className="col-1"></div>
-            <div className="col-8">
-                {quiz.type}
-                {/* {quiz.questions.points} */}
-                {quiz.assignmentGroup}
-                {quiz.shuffleAnswer}
-                {quiz.timeLimit}
-                {/* If Multiple Attempts is Yes, then can configure how many times the student can retake the quiz */}
 
-                {quiz.multipleAttempts}
-                {quiz.showCorrectAnswers}
-                {quiz.accessCode}
-                {quiz.oneQuestionAtATime}
-                {quiz.webcamRequired}
-                {quiz.lockQuestionsAfterAnswering}
-            </div>
-            <table id="quiz-preview-table" className="table">
+            <table id="quiz-preview-table" className="table mt-4">
                 <thead>
                     <tr>
                         <th>Due</th>
@@ -98,15 +93,12 @@ export default function QuizDetailScreen() {
                 </thead>
                 <tbody>
                     <tr>
-                        <td>{quiz.dueDate} at {quiz.dueDate}</td>
-                        <td>{quiz.availableDate} at {quiz.availableDate}</td>
-                        <td>{quiz.untilDate} at {quiz.untilDate}</td>
-
+                        <td>{quiz.dueDate} at {quiz.dueTime}</td>
+                        <td>{quiz.availableDate} at {quiz.availableTime}</td>
+                        <td>{quiz.untilDate} at {quiz.untilTime}</td>
                     </tr>
                 </tbody>
             </table>
-
-
-        </div >
-    )
+        </div>
+    );
 }

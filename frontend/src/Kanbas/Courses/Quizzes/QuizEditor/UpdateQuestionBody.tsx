@@ -1,9 +1,6 @@
 import { useDispatch, useSelector } from "react-redux";
-import * as client from "../client";
 import { setQuestion } from "../reducer";
 import Select from 'react-select';
-import React from 'react';
-import { FaPlus } from "react-icons/fa";
 import MultipleChoice from "./MultiChoice";
 import TrueFalse from "./TrueFalse";
 import FillIn from "./FillIn";
@@ -11,7 +8,6 @@ import FillIn from "./FillIn";
 function QuestionHeader() {
     const dispatch = useDispatch();
     const question = useSelector((state: any) => state.quizzesReducer.question);
-
     const questionTypeOptions = [
         { value: 'MULTIPLE_CHOICE', label: 'Multiple Choice' },
         { value: 'TRUE_FALSE', label: 'True False' },

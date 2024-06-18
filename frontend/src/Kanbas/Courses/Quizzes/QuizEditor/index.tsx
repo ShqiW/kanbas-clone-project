@@ -1,21 +1,19 @@
 import { useEffect, useState } from "react";
 import { Nav, NavItem } from "react-bootstrap";
-import { FaCheckCircle } from "react-icons/fa";
-import { FaEllipsisVertical } from "react-icons/fa6";
+import { FaBan, FaCheckCircle } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import * as client from "../client";
-import { setQuiz, updateQuiz } from "../reducer";
+import { setQuiz } from "../reducer";
 import DetailsEditor from "./DetailsEditor";
 import QuestionsEditor from "./QuestionsEditor";
-import { Link } from "react-router-dom";
+
 
 export default function QuizEditor() {
-    const { qid, cid } = useParams();
-    const navigate = useNavigate();
+    const { qid } = useParams();
     const dispatch = useDispatch();
-
     const [currentTab, setCurrentTab] = useState("Details");
+    const quiz = useSelector((state: any) => state.quizzesReducer.quiz);
 
     useEffect(() => {
         if (qid) {
@@ -25,27 +23,29 @@ export default function QuizEditor() {
         }
     }, [qid, dispatch]);
 
-    const quiz = useSelector(state => state.quizzesReducer.quiz);
-
-
-
-
     return (
         <div className="container">
-            <div className="text-end col">
-                Points 0
-                <span><FaCheckCircle /> Published</span>
-                <button className="btn "><FaEllipsisVertical /></button>
+            <div className="text-end col style={{ fontSize: '1.2em' }}">
+                {currentTab === "Details" ? (
+                    <>
+                        Points {quiz.questions.length > 0 ? `${quiz.questions.reduce((addedPoints, { points }) => addedPoints + points, 0)}` : '0'}
+                        {quiz.published ?
+                            <div className="text-success"><FaCheckCircle /> Published</div>
+                            : <div className="text-danger"><FaBan /> Unpublished </div>
+                        }
+                    </>
+                ) : (
+                    <>
+                        Points {quiz.questions.length > 0 ? `${quiz.questions.reduce((addedPoints, { points }) => addedPoints + points, 0)}` : '0'}
+                    </>
+                )}
             </div>
             <hr />
-
             <Nav>
                 <NavItem className={`nav-link ${currentTab === "Details" ? "active" : "text-danger"}`} onClick={() => setCurrentTab("Details")}>Details</NavItem>
                 <NavItem className={`nav-link ${currentTab === "Questions" ? "active" : "text-danger"}`} onClick={() => setCurrentTab("Questions")}>Questions</NavItem>
             </Nav>
             {currentTab === "Details" ? <DetailsEditor /> : <QuestionsEditor />}
-
-
         </div>
     );
 }

@@ -18,23 +18,21 @@ export default function TrueFalse() {
                     onChange={(e) => dispatch(setQuestion({ ...question, questionText: e.target.value }))}
                 />
             </div>
-
-
             <div className="col-12 mb-3">
                 <label>Correct Answer:</label>
                 <div>
                     <input
                         type="radio"
                         name="trueFalse"
-                        checked={question.correctAnswer === true}
-                        onChange={() => dispatch(setQuestion({ ...question, correctAnswer: true }))}
+                        checked={question.trueFalseAnswer === true}
+                        onChange={() => dispatch(setQuestion({ ...question, trueFalseAnswer: true }))}
                     />
                     <label className="ms-2 me-3">True</label>
                     <input
                         type="radio"
                         name="trueFalse"
-                        checked={question.correctAnswer === false}
-                        onChange={() => dispatch(setQuestion({ ...question, correctAnswer: false }))}
+                        checked={question.trueFalseAnswer === false}
+                        onChange={() => dispatch(setQuestion({ ...question, trueFalseAnswer: false }))}
                     />
                     <label className="ms-2">False</label>
                 </div>

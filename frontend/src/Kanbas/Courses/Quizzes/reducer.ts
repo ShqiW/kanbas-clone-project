@@ -8,32 +8,34 @@ const initialState = {
         _id: "",
         name: "",
         description: "",
-        published: "",
+        published: false,
         course: "",
-        type: "",
-        assignmentGroup: "",
-        shuffleAnswer: "",
-        timeLimit: "",
-        multipleAttempts: "",
-        showCorrectAnswers: "",
+        type: "GRADED_QUIZ",
+        points: 0,
+        assignmentGroup: "QUIZZES",
+        shuffleAnswers: true,
+        timeLimit: 20,
+        multipleAttempts: false,
+        showCorrectAnswers: false,
         accessCode: "",
-        oneQuestionAtATime: "",
-        webcamRequired: "",
-        lockQuestionsAfterAnswering: "",
+        oneQuestionAtATime: true,
+        webcamRequired: false,
+        lockQuestionsAfterAnswering: false,
         dueDate: "",
-        availableDate: "",
-        untilDate: "",
+        availableFrom: "",
+        availableUntil: "",
+        isTemporary: true,
+        isTimeLimit: true,
         questions: []
-
     },
     question: {
         title: "",
-        questionText: "",
-        type: "",
-        point: "",
-        multiAnswer: [],
-        tfAnswer: "",
-        fillInAnswer: []
+        questionText: "Multiple",
+        questionType: "",
+        points: 0,
+        multipleChoiceQuestionAnswers: [],
+        trueFalseAnswer: false,
+        fillInBlankAnswers: []
     }
 };
 
@@ -58,10 +60,10 @@ const quizzesReducer = createSlice({
         },
         setQuizzes: (state, action) => {
             state.quizzes = action.payload;
-            console.log("check for setQuizzes", action.payload)
         },
 
         setQuiz: (state, action) => {
+            console.log('setQuiz action payload:', action.payload); // Log payload
             state.quiz = action.payload;
         },
         setQuestion: (state, action) => {

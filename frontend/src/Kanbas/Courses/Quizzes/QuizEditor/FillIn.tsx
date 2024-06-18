@@ -10,20 +10,18 @@ export default function FillIn() {
     const addCorrectAnswer = () => {
         dispatch(setQuestion({
             ...question,
-            fillInAnswer: [...question.fillInAnswer, { text: "", caseInsensitive: false }]
+            fillInBlankAnswers: [...question.fillInBlankAnswers, { text: "", caseInsensitive: false }]
         }));
     };
-
     const removeCorrectAnswer = (index: number) => {
         dispatch(setQuestion({
             ...question,
-            fillInAnswer: question.fillInAnswer.filter((_: any, i: number) => i !== index)
+            fillInBlankAnswers: question.fillInBlankAnswers.filter((_: any, i: number) => i !== index)
         }));
     };
-
     const updateCorrectAnswer = (index: number, updatedAnswer: any) => {
-        const newfillInAnswer = question.fillInAnswer.map((answer: any, i: number) => i === index ? updatedAnswer : answer);
-        dispatch(setQuestion({ ...question, fillInAnswer: newfillInAnswer }));
+        const newfillInBlankAnswers = question.fillInBlankAnswers.map((answer: any, i: number) => i === index ? updatedAnswer : answer);
+        dispatch(setQuestion({ ...question, fillInBlankAnswers: newfillInBlankAnswers }));
     };
 
     return (
@@ -36,10 +34,9 @@ export default function FillIn() {
                     onChange={(e) => dispatch(setQuestion({ ...question, questionText: e.target.value }))}
                 />
             </div>
-
             <div className="col-12 mb-3">
                 <label>Correct Answers:</label>
-                {question.fillInAnswer.map((answer: any, index: number) => (
+                {question.fillInBlankAnswers.map((answer: any, index: number) => (
                     <div key={index} className="row mb-2">
                         <div className="col-8">
                             <input
@@ -77,11 +74,7 @@ export default function FillIn() {
                         <FaPlus /> Add Another Correct Answer
                     </span>
                 </div>
-
-
             </div>
-
-
         </div>
     );
 }

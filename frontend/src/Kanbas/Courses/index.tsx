@@ -13,6 +13,7 @@ import PeopleTable from "./People/Table";
 import QuizEditor from "./Quizzes/QuizEditor";
 import QuizDetailScreen from "./Quizzes/QuizDetailScreen";
 import QuizPreview from "./Quizzes/QuizPreview";
+import QuestionsEditor from "./Quizzes/QuizEditor/QuestionsEditor";
 
 
 export default function Courses({ courses }: { courses: any[] }) {

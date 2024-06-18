@@ -1,56 +1,80 @@
 import { useDispatch, useSelector } from "react-redux";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import * as client from "../client"
-import { useEffect, useState } from "react";
-import { setQuiz } from "../reducer";
+import { useEffect } from "react";
+import { setQuiz, updateQuiz, deleteQuiz } from "../reducer";
 import Select from 'react-select'
 import { parseDateString } from "../../Assignments/parseDateString";
 
 export default function DetailsEditor() {
     const dispatch = useDispatch();
     const { cid, qid } = useParams();
-    const quiz = useSelector(state => state.quizzesReducer.quiz);
+    const navigate = useNavigate();
+    const quiz = useSelector((state: any) => state.quizzesReducer.quiz);
 
     useEffect(() => {
         if (qid) {
             client.findQuizByQuizId(qid).then((quiz) => {
                 dispatch(setQuiz(quiz))
-
             });
         }
     }, []);
-
-    const quizType = [
+    const type = [
         { value: 'GRADED_QUIZ', label: 'Graded Quiz' },
         { value: 'PRACTICE_QUIZ', label: 'Practice Quiz' },
         { value: 'GRADED_SURVEY', label: 'Graded Survey' },
         { value: 'UNGRADED_SURVEY', label: 'Ungraded Survey' }
     ]
-
     const assignmentGroup = [
         { value: 'QUIZZES', label: 'QUIZZES' },
         { value: 'EXAMS', label: 'EXAMS' },
         { value: 'ASSIGNMENTS', label: 'ASSIGNMENTS' },
         { value: 'PROJECT', label: 'PROJECT' }
     ]
-    const [isTimeLimit, setIsTimeLimit] = useState(false);
+    const handleSave = async () => {
+        let updatedQuiz = { ...quiz, isTemporary: false };
+        const updatedQuizData = await client.updateQuiz(updatedQuiz);
+        dispatch(updateQuiz(updatedQuizData));
+        navigate(`/Kanbas/Courses/${cid}/Quizzes`);
+    };
 
+    const handleSaveAndPublish = async () => {
+        const updatedQuiz = { ...quiz, published: true };
+        const response = await client.updateQuiz(updatedQuiz);
+        dispatch(updateQuiz(response));
+        navigate(`/Kanbas/Courses/${cid}/Quizzes/${qid}`);
+    };
+    const handleCancel = async () => {
+        console.log(quiz)
+        if (quiz.isTemporary) {
+            await client.deleteQuiz(quiz._id);
+            dispatch(deleteQuiz(quiz._id));
+            console.log("in right track")
+        }
+        navigate(`/Kanbas/Courses/${cid}/Quizzes`);
+    };
 
     return (
         <div className="container">
             Details
-            <input value={quiz.name} className="form-control mb-2" defaultValue="Unnamed Quiz" onChange={(e) => dispatch(setQuiz({ ...quiz, name: e.target.value }))} />
+            <input value={quiz.name} className="form-control mb-2" onChange={(e) => dispatch(setQuiz({ ...quiz, name: e.target.value }))} />
             <p>Quiz Instructions:</p>
-            <input value={quiz.description} className="form-control mb-2" defaultValue="quiz description" onChange={(e) => dispatch(setQuiz({ ...quiz, description: e.target.value }))} />
+            <textarea
+                value={quiz.description}
+                className="form-control mb-2"
+                rows={5}
+                placeholder="Enter quiz description..."
+                onChange={(e) => dispatch(setQuiz({ ...quiz, description: e.target.value }))}
+            />
             <br /> <br /> <br /> <br /> <br />
             <div>
                 <div className="row">
                     <div className="col-3 text-end"><p>Quiz Type</p></div>
                     <div className="col-9">
                         <Select
-                            value={quizType.find((qt) => qt.value === quiz.quizType)}
-                            options={quizType}
-                            onChange={(e) => dispatch(setQuiz({ ...quiz, quizType: e?.value }))}
+                            value={type.find((qt) => qt.value === quiz.type)}
+                            options={type}
+                            onChange={(e) => dispatch(setQuiz({ ...quiz, type: e?.value }))}
                         />
                     </div>
                 </div>
@@ -69,12 +93,22 @@ export default function DetailsEditor() {
                         <br />
                         <div className="row">
                             <div className="col-6">
-                                <input type="checkbox" id="timeLimit" checked={isTimeLimit} onChange={() => setIsTimeLimit(!isTimeLimit)} />
+                                <input
+                                    type="checkbox"
+                                    id="timeLimit"
+                                    checked={quiz.isTimeLimit}
+                                    onChange={() => dispatch(setQuiz({ ...quiz, isTimeLimit: !quiz.isTimeLimit }))} // Toggle isTimeLimit directly
+                                />
                                 <label htmlFor="timeLimit">Time Limit (Minutes)</label>
                             </div>
                             <div className="col-6">
-                                <input type="number" disabled={!isTimeLimit} value={isTimeLimit ? quiz.timeLimit : ""}
-                                    className="form-control" onChange={(e) => dispatch(setQuiz({ ...quiz, timeLimit: e.target.value }))}
+                                <input
+                                    type="number"
+                                    id="timeLimitValue"
+                                    className="form-control"
+                                    disabled={!quiz.isTimeLimit}
+                                    value={quiz.timeLimit || ''}
+                                    onChange={(e) => dispatch(setQuiz({ ...quiz, timeLimit: e.target.value }))}
                                 />
                             </div>
                         </div>
@@ -91,17 +125,14 @@ export default function DetailsEditor() {
                             <input type="checkbox" id="webcamRequired" checked={quiz.webcamRequired} onChange={(e) => dispatch(setQuiz({ ...quiz, webcamRequired: !quiz.webcamRequired }))} />
                             <label htmlFor="webcamRequired">Webcam Required</label>
                             <br />
-
-
                             <input type="checkbox" id="lockQuestionsAfterAnswering" checked={quiz.lockQuestionsAfterAnswering} onChange={(e) => dispatch(setQuiz({ ...quiz, lockQuestionsAfterAnswering: !quiz.lockQuestionsAfterAnswering }))} />
                             <label htmlFor="lockQuestionsAfterAnswering">Lock Questions After Answering</label>
-                            <br />
 
-                            <div className="row">
-                                <div className="col-3">
+                            <div className="row align-items-center">
+                                <div className="col-6">
                                     <label htmlFor="accessCode">Access Code</label>
                                 </div>
-                                <div className="col-9">
+                                <div className="col-6">
                                     <input value={quiz.accessCode} id="accessCode"
                                         className="form-control mb-2" onChange={(e) => dispatch(setQuiz({ ...quiz, accessCode: e.target.value }))}
                                     />
@@ -120,7 +151,7 @@ export default function DetailsEditor() {
                                 id="dueDate"
                                 className="form-control"
                                 value={parseDateString(quiz.dueDate)}
-                                min={parseDateString(quiz.availableUntil)}
+                                min={parseDateString(quiz.availableFrom)}
                                 onChange={(e) => dispatch(setQuiz({ ...quiz, dueDate: e.target.value }))}
                             />
                         </div>
@@ -132,7 +163,7 @@ export default function DetailsEditor() {
                                     id="availableFrom"
                                     className="form-control"
                                     value={parseDateString(quiz.availableFrom)}
-                                    onChange={(e) => dispatch(setQuiz({ ...quiz, availableDate: e.target.value }))}
+                                    onChange={(e) => dispatch(setQuiz({ ...quiz, availableFrom: e.target.value }))}
                                 />
                             </div>
                             <div className="col">
@@ -143,7 +174,7 @@ export default function DetailsEditor() {
                                     className="form-control"
                                     value={parseDateString(quiz.availableUntil)}
                                     min={parseDateString(quiz.availableFrom)}
-                                    onChange={(e) => dispatch(setQuiz({ ...quiz, untilDate: e.target.value }))}
+                                    onChange={(e) => dispatch(setQuiz({ ...quiz, availableUntil: e.target.value }))}
                                 />
                             </div>
                         </div>
@@ -151,13 +182,14 @@ export default function DetailsEditor() {
                 </div>
                 <div className="col-12 d-flex justify-content-center p-3 m-3">
                     <Link to={`/Kanbas/Courses/${cid}/Quizzes`}
-                        className="btn btn-light m-2">
+                        className="btn btn-light m-2"
+                        onClick={() => handleCancel()}>
                         Cancel
                     </Link>
-                    <button className="btn btn-light m-2">
+                    <button className="btn btn-light m-2" onClick={() => handleSaveAndPublish()}>
                         Save & Publish
                     </button>
-                    <button className="btn btn-danger m-2">
+                    <button className="btn btn-danger m-2" onClick={() => handleSave()}>
                         Save
                     </button>
                 </div>

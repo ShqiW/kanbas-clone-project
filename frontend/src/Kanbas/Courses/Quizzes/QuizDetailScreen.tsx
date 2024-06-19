@@ -5,6 +5,7 @@ import * as client from './client';
 import { setQuiz } from './reducer';
 import { BsPencil } from 'react-icons/bs';
 import { formatDate } from '../Assignments/DateFormat';
+import { Link } from 'react-router-dom';
 
 export default function QuizDetailScreen() {
     const { cid, qid } = useParams();
@@ -13,6 +14,7 @@ export default function QuizDetailScreen() {
     const [loading, setLoading] = useState(true);
     const quiz = useSelector((state: any) => state.quizzesReducer.quiz);
     const user = useSelector((state: any) => state.accountReducer.currentUser);
+    const [history, setHistory] = useState([]);
 
     useEffect(() => {
         if (qid) {
@@ -23,6 +25,7 @@ export default function QuizDetailScreen() {
                     setLoading(false);
                 })
                 .catch(() => setLoading(false));
+            client.findHistoriesByQuizId(qid).then(hs => setHistory(hs)).catch(err => console.log(err))
         }
     }, [qid, dispatch]);
 
@@ -45,7 +48,7 @@ export default function QuizDetailScreen() {
             <div className="col-12 text-center d-flex justify-content-center">
                 {user && user.role === 'FACULTY' && (
                     <>
-                        <button type="button" className="btn rounded ps-3 pe-3 me-2 border" onClick={() => navigate(`/Kanbas/Courses/${cid}/Quizzes/${qid}/preview`)}>
+                        <button type="button" className="btn rounded ps-3 pe-3 me-2 border" onClick={() => navigate(`/Kanbas/Courses/${cid}/Quizzes/${qid}/take`)}>
                             Preview
                         </button>
                         <button type="button" className="btn rounded ps-3 pe-3 border" onClick={() => navigate(`/Kanbas/Courses/${cid}/Quizzes/${qid}/edit`)}>
@@ -54,7 +57,7 @@ export default function QuizDetailScreen() {
                     </>
                 )}
                 {user && user.role === 'STUDENT' && (
-                    <button type="button" className="btn btn-sm rounded ps-3 pe-3 border" onClick={() => navigate(`/Kanbas/Courses/${cid}/Quizzes/${qid}/preview`)}>
+                    <button type="button" className="btn btn-sm rounded ps-3 pe-3 border" onClick={() => navigate(`/Kanbas/Courses/${cid}/Quizzes/${qid}/take`)}>
                         Take Quiz
                     </button>
                 )}
@@ -109,6 +112,11 @@ export default function QuizDetailScreen() {
                     </tr>
                 </tbody>
             </table>
+            <hr />
+            <h2>History</h2>
+            {history.map(h =>
+                <Link className='btn btn-primary' to='history'>Last Attempt</Link>
+            )}
             {/* <pre>{JSON.stringify(quiz, null, 2)}</pre> */}
         </div>
     );

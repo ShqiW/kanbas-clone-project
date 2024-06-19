@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Navigate, Route, Routes, useParams } from "react-router-dom";
+import { Navigate, Route, Routes, useNavigate, useParams } from "react-router-dom";
 import { setQuiz } from "./reducer";
 import * as client from "./client";
 import { Link } from "react-router-dom";
@@ -8,10 +8,14 @@ import { Link } from "react-router-dom";
 export default function QuizTake() {
     const { qid } = useParams();
     const dispatch = useDispatch();
+    const navigate = useNavigate();
     const quiz = useSelector((state: any) => state.quizzesReducer.quiz);
+    const user = useSelector((state: any) => state.accountReducer.currentUser);
+    const [history, setHistory] = useState([] as any[]);
     const submit = async () => {
         try {
             await client.updateHistory(qid!, {questions: questionList});
+            navigate("..", {relative: "path"})
         } catch (error) {
             console.error("Error fetching quizzes:", error);
         }
@@ -23,6 +27,7 @@ export default function QuizTake() {
                 if (qid) {
                     const fetchedQuiz = await client.findQuizByQuizId(qid);
                     dispatch(setQuiz(fetchedQuiz));
+                    client.findHistoriesByQuizId(qid).then(hs => setHistory(hs)).catch(err => console.log(err))
                 }
             } catch (error) {
                 console.error("Error fetching quiz:", error);
@@ -98,11 +103,24 @@ export default function QuizTake() {
                                                 })
                                             }} />
                                         </div> : null}
+                                        {user && user.role === 'FACULTY' && history.length > 0 ? i >= 0 && i < history[0].questions.length ? <div className="my-5 container">
+                                            <div className="row">
+                                                <h3>Last attempt</h3>
+                                            </div>
+                                            <div className="row">
+                                                <div className="col">
+                                                    answer: {'answer' in history[0].questions[i] ? history[0].questions[i].answer.toString() : null}
+                                                </div>
+                                                <div className="col">
+                                                    time: {'answer' in history[0].questions[i] ? history[0].questions[i].answerTime : null}
+                                                </div>
+                                            </div>
+                                        </div> : null : null}
                                     </div>
                                 </div>
                             </div>
                             {i > 0 ? <Link to={`../${i - 1}`} className="btn btn-primary mx-2">Previous</Link> : null}
-                            {i < questionList.length - 1 ? <Link to={`../${i + 1}`} className="btn btn-primary mx-2">Next</Link> : <Link to="../../Quizzes" className="btn btn-warning mx-2" onClick={() => submit()}>Submit</Link>}
+                            {i < questionList.length - 1 ? <Link to={`../${i + 1}`} className="btn btn-primary mx-2">Next</Link> : <button className="btn btn-warning mx-2" onClick={() => submit()}>Submit</button>}
                         </div>
                     } />
                 ))}

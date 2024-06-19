@@ -9,22 +9,30 @@ export default function HistoryRoutes(app) {
             return;
         }
         let newHistory = {...JSON.parse(JSON.stringify(req.body)), user: currentUser._id, quiz: qid, points: 0}
-        newHistory.questions.forEach(q => {
-            if (q.questionType === 'MULTIPLE_CHOICE') {
-                if (q.multipleChoiceQuestionAnswers[q.answer].correct) {
-                    newHistory.points += q.points
-                }
-            } else if (q.questionType === 'TRUE_FALSE') {
-                if (q.answer === q.trueFalseAnswer) {
-                    newHistory.points += q.points
-                }
-            } else if (q.questionType === 'FILL_IN') {
-                for (let a of q.fillInBlankAnswers) {
-                    if (q.answer === a.text || (a.caseInsensitive && q.answer.toLowerCase() === a.text.toLowerCase())) {
+        newHistory.questions.forEach((q, i) => {
+            if ('answer' in q) {
+                if (q.questionType === 'MULTIPLE_CHOICE') {
+                    if (q.multipleChoiceQuestionAnswers[q.answer].correct) {
                         newHistory.points += q.points
-                        break
+                        newHistory.questions[i].correct = true
+                    }
+                } else if (q.questionType === 'TRUE_FALSE') {
+                    if (q.answer === q.trueFalseAnswer) {
+                        newHistory.points += q.points
+                        newHistory.questions[i].correct = true
+                    }
+                } else if (q.questionType === 'FILL_IN') {
+                    for (let a of q.fillInBlankAnswers) {
+                        if (q.answer === a.text || (a.caseInsensitive && q.answer.toLowerCase() === a.text.toLowerCase())) {
+                            newHistory.points += q.points
+                            newHistory.questions[i].correct = true
+                            break
+                        }
                     }
                 }
+            }
+            if (!('correct' in newHistory.questions[i])) {
+                newHistory.questions[i].correct = false
             }
         });
         let currentHistory = await dao.findHistoriesByQuizId(currentUser._id, qid)

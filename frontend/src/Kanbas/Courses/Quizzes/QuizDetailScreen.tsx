@@ -14,7 +14,7 @@ export default function QuizDetailScreen() {
     const [loading, setLoading] = useState(true);
     const quiz = useSelector((state: any) => state.quizzesReducer.quiz);
     const user = useSelector((state: any) => state.accountReducer.currentUser);
-    const [history, setHistory] = useState([]);
+    const [history, setHistory] = useState([] as any[]);
 
     useEffect(() => {
         if (qid) {
@@ -47,14 +47,14 @@ export default function QuizDetailScreen() {
         <div className="container">
             <div className="col-12 text-center d-flex justify-content-center">
                 {user && user.role === 'FACULTY' && (
-                    <>
+                    <div>
                         <button type="button" className="btn rounded ps-3 pe-3 me-2 border" onClick={() => navigate(`/Kanbas/Courses/${cid}/Quizzes/${qid}/take`)}>
                             Preview
                         </button>
                         <button type="button" className="btn rounded ps-3 pe-3 border" onClick={() => navigate(`/Kanbas/Courses/${cid}/Quizzes/${qid}/edit`)}>
                             <BsPencil /> Edit
                         </button>
-                    </>
+                    </div>
                 )}
                 {user && user.role === 'STUDENT' && (
                     <button type="button" className="btn btn-sm rounded ps-3 pe-3 border" onClick={() => navigate(`/Kanbas/Courses/${cid}/Quizzes/${qid}/take`)}>
@@ -83,7 +83,7 @@ export default function QuizDetailScreen() {
                 <div className="col-1"></div>
                 <div className="col-6 mb-2">
                     {quiz.type || 'N/A'}<br />
-                    {quiz.questions.length > 0 ? `${quiz.questions.reduce((addedPoints, { points }) => addedPoints + points, 0)}` : '0'}<br />
+                    {quiz.questions.length > 0 ? `${quiz.questions.reduce((addedPoints: any, { points }: {points: any}) => addedPoints + points, 0)}` : '0'}<br />
                     {quiz.assignmentGroup || 'N/A'}<br />
                     {quiz.shuffleAnswers ? 'Yes' : 'No'}<br />
                     {quiz.isTimeLimit ? quiz.timeLimit : 'No Time Limit'}<br />
@@ -114,11 +114,50 @@ export default function QuizDetailScreen() {
             </table>
             <hr />
             <h2>History</h2>
-            {history.map(h =>
-                <Link className='btn btn-primary' to='history'>Last Attempt</Link>
-            )}
-            {/* <pre>{JSON.stringify(quiz, null, 2)}</pre> */}
+            {history.length > 0 ? <div className='container'>
+                <div className='row'>
+                    <h4>total points: {history[0].points}</h4>
+                </div>
+                <div className='row'>
+                    {history[0].questions.map((q: any, i: number) => {
+                        return (
+                            <div>
+                                <h2 className={q.correct ? 'bg-success' : 'bg-danger'}>{q.title}</h2>
+                                <div className="container my-3">
+                                    <div className="row my-3">
+                                        <div className="col">
+                                            <h4>{q.questionText}</h4>
+                                        </div>
+                                        <div className="col-2">
+                                            {q.correct ? q.points : 0} / {q.points}pts
+                                        </div>
+                                    </div>
+                                    <div className="row my-3">
+                                        {q.questionType === 'MULTIPLE_CHOICE' ? q.multipleChoiceQuestionAnswers.map((a: any, j: number) => (
+                                            <div className="form-check">
+                                                <input disabled key={`${i}${a.answer}`} id={`${i}${a.answer}`} className="form-check-input" type="radio" name={`${i}`} checked={'answer' in q && q.answer === j} />
+                                                <label className="form-check-label" htmlFor={`${i}${a.answer}`}>{a.answer}</label>
+                                            </div>
+                                        )) : q.questionType === 'TRUE_FALSE' ? <div>
+                                            <div className="form-check">
+                                                <input disabled className="form-check-input" type="radio" name={`${i}`} key={`${i}true`} id={`${i}true`} checked={'answer' in q && q.answer} />
+                                                <label className="form-check-label" htmlFor={`${i}true`}>True</label>
+                                            </div>
+                                            <div className="form-check">
+                                                <input disabled className="form-check-input" type="radio" name={`${i}`} key={`${i}false`} id={`${i}false`} checked={'answer' in q && !q.answer} />
+                                                <label className="form-check-label" htmlFor={`${i}false`}>False</label>
+                                            </div>
+                                        </div> : q.questionType === 'FILL_IN' ? <div>
+                                            <label htmlFor={`${i}`} className="form-label">Answer:</label>
+                                            <input disabled className="form-control" key={`${i}`} id={`${i}`} value={'answer' in q ? q.answer : ''} />
+                                        </div> : null}
+                                    </div>
+                                </div>
+                            </div>
+                        )
+                    })}
+                </div>
+            </div> : null}
         </div>
     );
 }
-

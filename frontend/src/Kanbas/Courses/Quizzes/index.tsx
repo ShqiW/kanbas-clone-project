@@ -10,7 +10,7 @@ import * as client from "./client";
 import { SiStarship } from 'react-icons/si';
 
 
-function QuizAvailable(props) {
+function QuizAvailable(props: any) {
     const currentDate = new Date();
     const { quiz } = props;
 

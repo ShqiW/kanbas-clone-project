@@ -116,33 +116,60 @@ export default function Quizzes() {
                                             <QuizAvailable quiz={quiz} /> |
                                             <span style={{ fontWeight: "bold" }}>Due </span>
                                             {quiz.dueDate ? formatDate(quiz.dueDate) : 'N/A'}
-                                            {(quiz.published && quiz.questions.length > 0) ? `| ${quiz.questions.reduce((addedPoints, { points }) => addedPoints + points, 0)} pts | ${quiz.questions.length} Questions` : ""}
 
+                                            {(quiz.questions.length > 0) ?
+                                                `| ${quiz.questions.reduce((addedPoints, { points }) => addedPoints + points, 0)} pts | ` : `0 pts |`
+                                            }
+                                            {quiz.questions.length} Questions
+
+
+                                            {/* NEED UPDATE: if student took quiz, display score */}
                                             {user && user.role === "STUDENT" && (
-                                                <span style={{ fontWeight: "bold" }}>Score uncompleted </span>
+                                                <span style={{ fontWeight: "bold" }}>| Score uncompleted </span>
                                             )}
                                         </div>
                                     </div>
                                 </div>
                             </Link>
-                            < div className="d-flex align-items-center me-2" >
-                                {quiz.published ? <FaCheckCircle className="me-2 text-success" style={{ fontSize: '24px' }} /> : <FaCheckCircle className="me-2 " style={{ fontSize: '24px', color: '#999999' }} />}
-                                < div onClick={() => handleMenu(quiz._id)}>
-                                    <FaEllipsisVertical style={{ fontSize: '24px' }} />
-                                </div>
-                                {
-                                    activeQuizId === quiz._id && (
-                                        <div className="context-menu">
-                                            <button type="button" className="btn btn-light btn-sm rounded m-2" onClick={() => navigate(`/Kanbas/Courses/${cid}/Quizzes/${quiz._id}/edit`)}>Edit</button>
-                                            {quiz.published ?
-                                                <button type="button" className="btn btn-danger btn-sm rounded m-2" onClick={() => handleChangePublishValue(quiz, false)}><FaBan /> Unpublish</button> :
-                                                <button type="button" className="btn btn-success btn-sm rounded m-2" onClick={() => handleChangePublishValue(quiz, true)}><FaCheckCircle /> Publish</button>
-                                            }
-                                            <button type="button" className="btn btn-danger btn-sm rounded m-2" onClick={() => handleDelete(quiz._id)}>Delete</button>
+                            <div className="d-flex align-items-center me-2">
+                                {/* NEED UPDATE: display if student took the quiz */}
+                                {user.role === "STUDENT" && (
+                                    <FaCheckCircle />
+                                )}
+
+                                {user.role === "FACULTY" && (
+                                    <>
+                                        {quiz.published ? (
+                                            <FaCheckCircle className="me-2 text-success" style={{ fontSize: '24px' }} />
+                                        ) : (
+                                            <FaCheckCircle className="me-2" style={{ fontSize: '24px', color: '#999999' }} />
+                                        )}
+                                        <div onClick={() => handleMenu(quiz._id)}>
+                                            <FaEllipsisVertical style={{ fontSize: '24px' }} />
                                         </div>
-                                    )
-                                }
-                            </div >
+                                        {activeQuizId === quiz._id && (
+                                            <div className="context-menu">
+                                                <button type="button" className="btn btn-light btn-sm rounded m-2" onClick={() => navigate(`/Kanbas/Courses/${cid}/Quizzes/${quiz._id}/edit`)}>
+                                                    Edit
+                                                </button>
+                                                {quiz.published ? (
+                                                    <button type="button" className="btn btn-danger btn-sm rounded m-2" onClick={() => handleChangePublishValue(quiz, false)}>
+                                                        <FaBan /> Unpublish
+                                                    </button>
+                                                ) : (
+                                                    <button type="button" className="btn btn-success btn-sm rounded m-2" onClick={() => handleChangePublishValue(quiz, true)}>
+                                                        <FaCheckCircle /> Publish
+                                                    </button>
+                                                )}
+                                                <button type="button" className="btn btn-danger btn-sm rounded m-2" onClick={() => handleDelete(quiz._id)}>
+                                                    Delete
+                                                </button>
+                                            </div>
+                                        )}
+                                    </>
+                                )}
+                            </div>
+
                         </div >
                     </li >
                 ))

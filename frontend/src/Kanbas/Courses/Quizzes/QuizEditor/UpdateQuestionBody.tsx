@@ -50,7 +50,7 @@ function QuestionHeader() {
 
 
 export default function UpdateQuestionBody() {
-    const question = useSelector((state) => state.quizzesReducer.question);
+    const question = useSelector((state: any) => state.quizzesReducer.question);
     return (
         <div>
             <QuestionHeader />

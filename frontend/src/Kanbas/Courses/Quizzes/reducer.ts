@@ -16,6 +16,7 @@ const initialState = {
         shuffleAnswers: true,
         timeLimit: 20,
         multipleAttempts: false,
+        attemptChange: 1,
         showCorrectAnswers: false,
         accessCode: "",
         oneQuestionAtATime: true,
@@ -31,7 +32,7 @@ const initialState = {
     question: {
         title: "",
         questionText: "Multiple",
-        questionType: "",
+        questionType: "MULTIPLE_CHOICE",
         points: 0,
         multipleChoiceQuestionAnswers: [],
         trueFalseAnswer: false,
@@ -63,7 +64,6 @@ const quizzesReducer = createSlice({
         },
 
         setQuiz: (state, action) => {
-            console.log('setQuiz action payload:', action.payload); // Log payload
             state.quiz = action.payload;
         },
         setQuestion: (state, action) => {

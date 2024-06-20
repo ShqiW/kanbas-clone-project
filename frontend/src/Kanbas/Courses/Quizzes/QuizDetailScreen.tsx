@@ -37,12 +37,6 @@ export default function QuizDetailScreen() {
         return <div>Error loading quiz details.</div>;
     }
 
-    // const handleChangePublishValue = async (quiz, newPublishStatus) => {
-    //     const newQuiz = { ...quiz, published: newPublishStatus };
-    //     await client.updateQuiz(newQuiz);
-    //     dispatch(updateQuiz(newQuiz));
-    // };
-
     return (
         <div className="container">
             <div className="col-12 text-center d-flex justify-content-center">
@@ -83,10 +77,10 @@ export default function QuizDetailScreen() {
                 <div className="col-1"></div>
                 <div className="col-6 mb-2">
                     {quiz.type || 'N/A'}<br />
-                    {quiz.questions.length > 0 ? `${quiz.questions.reduce((addedPoints: any, { points }: {points: any}) => addedPoints + points, 0)}` : '0'}<br />
+                    {quiz.questions.length > 0 ? `${quiz.questions.reduce((addedPoints: any, { points }: { points: any }) => addedPoints + points, 0)}` : '0'}<br />
                     {quiz.assignmentGroup || 'N/A'}<br />
                     {quiz.shuffleAnswers ? 'Yes' : 'No'}<br />
-                    {quiz.isTimeLimit ? quiz.timeLimit : 'No Time Limit'}<br />
+                    {quiz.isTimeLimit ? 'No Time Limit' : quiz.timeLimit}<br />
                     {quiz.multipleAttempts ? 'Yes' : 'No'}<br />
                     {quiz.showCorrectAnswers ? 'Yes' : 'No'}<br />
                     {quiz.accessCode || 'N/A'}<br />
@@ -112,7 +106,7 @@ export default function QuizDetailScreen() {
                     </tr>
                 </tbody>
             </table>
-            <hr />
+            <br /><br /><br />
             <h2>History</h2>
             {history.length > 0 ? <div className='container'>
                 <div className='row'>
@@ -137,11 +131,19 @@ export default function QuizDetailScreen() {
                                             <div className="form-check">
                                                 <input disabled key={`${i}${a.answer}`} id={`${i}${a.answer}`} className="form-check-input" type="radio" name={`${i}`} checked={'answer' in q && q.answer === j} />
                                                 <label className="form-check-label" htmlFor={`${i}${a.answer}`}>{a.answer}</label>
+                                                {user.role === "STUDENT" && quiz.showCorrectAnswers || user.role == "FACULTY" &&
+                                                    <> a.correct && <span className="text-success"> (Correct)</span></>}
                                             </div>
+
                                         )) : q.questionType === 'TRUE_FALSE' ? <div>
                                             <div className="form-check">
                                                 <input disabled className="form-check-input" type="radio" name={`${i}`} key={`${i}true`} id={`${i}true`} checked={'answer' in q && q.answer} />
                                                 <label className="form-check-label" htmlFor={`${i}true`}>True</label>
+
+
+                                                {user.role === "STUDENT" && quiz.showCorrectAnswers || user.role == "FACULTY" && <>
+                                                    q.correct && <span className="text-success"> (Correct)</span>
+                                                </>}
                                             </div>
                                             <div className="form-check">
                                                 <input disabled className="form-check-input" type="radio" name={`${i}`} key={`${i}false`} id={`${i}false`} checked={'answer' in q && !q.answer} />
@@ -150,6 +152,16 @@ export default function QuizDetailScreen() {
                                         </div> : q.questionType === 'FILL_IN' ? <div>
                                             <label htmlFor={`${i}`} className="form-label">Answer:</label>
                                             <input disabled className="form-control" key={`${i}`} id={`${i}`} value={'answer' in q ? q.answer : ''} />
+                                            {user.role === "STUDENT" && quiz.showCorrectAnswers || user.role == "FACULTY" && <>
+                                                <div className='border rounded bg-gray text-success p-1 mt-1'>
+                                                    Correct Answer:
+                                                    {q.fillInBlankAnswers.map((answer: any, index: number) => (
+                                                        <div key={index}>
+                                                            <span>{answer.text}</span>
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            </>}
                                         </div> : null}
                                     </div>
                                 </div>
@@ -157,7 +169,8 @@ export default function QuizDetailScreen() {
                         )
                     })}
                 </div>
-            </div> : null}
-        </div>
+            </div> : null
+            }
+        </div >
     );
 }

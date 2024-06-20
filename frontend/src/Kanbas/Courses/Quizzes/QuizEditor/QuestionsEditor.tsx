@@ -2,12 +2,13 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link, useParams, useNavigate } from "react-router-dom";
 import * as client from "../client";
 import { useEffect, useState } from "react";
-import { setQuiz, updateQuiz, setQuestion } from "../reducer";
+import { setQuiz, updateQuiz, setQuestion, deleteQuiz } from "../reducer";
 import { FaEdit, FaPlus } from "react-icons/fa";
 import { Modal } from "react-bootstrap";
 import UpdateQuestionBody from "./UpdateQuestionBody";
 
 export default function QuestionsEditor() {
+
     const { cid, qid } = useParams();
     const dispatch = useDispatch();
     const navigate = useNavigate();
@@ -26,8 +27,18 @@ export default function QuestionsEditor() {
     }, [qid, dispatch]);
 
     const handleSave = async () => {
-        const updatedQuizData = await client.updateQuiz(quiz);
+        let updatedQuiz = { ...quiz, isTemporary: false };
+        const updatedQuizData = await client.updateQuiz(updatedQuiz);
         dispatch(updateQuiz(updatedQuizData));
+        navigate(`/Kanbas/Courses/${cid}/Quizzes`);
+    };
+    const handleCancel = async () => {
+        console.log(quiz)
+        if (quiz.isTemporary) {
+            await client.deleteQuiz(quiz._id);
+            dispatch(deleteQuiz(quiz._id));
+            console.log("in right track")
+        }
         navigate(`/Kanbas/Courses/${cid}/Quizzes`);
     };
     const validateQuestion = () => {
@@ -37,7 +48,11 @@ export default function QuestionsEditor() {
         switch (question.questionType) {
             case "MULTIPLE_CHOICE":
                 if (!question.multipleChoiceQuestionAnswers || question.multipleChoiceQuestionAnswers.length === 0) {
-                    return "Please select a correct answer for the multiple choice question.";
+                    return "Please provide at least one answer for the multiple-choice question.";
+                }
+                const hasCorrectAnswer = question.multipleChoiceQuestionAnswers.some(answer => answer.correct);
+                if (!hasCorrectAnswer) {
+                    return "Please select the correct answer for the multiple-choice question.";
                 }
                 break;
             case "TRUE_FALSE":
@@ -55,36 +70,29 @@ export default function QuestionsEditor() {
         }
         return null;
     };
+
     const handleUpdateQuestion = async () => {
         const validationError = validateQuestion();
         if (validationError) {
             alert(validationError);
             return;
         }
-        if (questionNumber >= 0 && questionNumber <= quiz.questions.length) {
-            let updatedQuiz;
-            if (questionNumber === quiz.questions.length) {
-                // Adding a new question
-                updatedQuiz = { ...quiz, questions: [...quiz.questions, question] };
-            } else {
-                // Updating an existing question
-                updatedQuiz = {
-                    ...quiz,
-                    questions: [
-                        ...quiz.questions.slice(0, questionNumber),
-                        question,
-                        ...quiz.questions.slice(questionNumber + 1)
-                    ]
-                };
-            }
-            const updatedQuizData = await client.updateQuiz(updatedQuiz);
-            dispatch(updateQuiz(updatedQuizData));
-            navigate(`/Kanbas/Courses/${cid}/Quizzes/${qid}/edit`);
-            setShowQuestionModal(false);
-        } else {
-            console.error("Invalid question number");
-        }
-    };
+        const updatedQuestion = JSON.parse(JSON.stringify(question));
+
+        const updatedQuiz = {
+            ...quiz, questions: [
+                ...quiz.questions.slice(0, questionNumber),
+                updatedQuestion,
+                ...quiz.questions.slice(questionNumber + 1)
+            ]
+        };
+        await client.updateQuiz(updatedQuiz);
+        dispatch(setQuiz(updatedQuiz));
+        setShowQuestionModal(false);
+    }
+
+
+
     const handleEditQuestion = (index) => {
         dispatch(setQuestion(quiz.questions[index]));
         setQuestionNumber(index);
@@ -115,7 +123,7 @@ export default function QuestionsEditor() {
                     dispatch(setQuestion({
                         title: `Question ${quiz.questions.length + 1}`,
                         questionText: "",
-                        questionType: "",
+                        questionType: "MULTIPLE_CHOICE",
                         points: 0,
                         multipleChoiceQuestionAnswers: [],
                         trueFalseAnswer: "",
@@ -141,7 +149,7 @@ export default function QuestionsEditor() {
                 </div>
             ))}
             <div className="col d-flex justify-content-center p-3 m-3">
-                <Link to={`/Kanbas/Courses/${cid}/Quizzes`} className="btn btn-light float-end m-2">Cancel</Link>
+                <Link to={`/Kanbas/Courses/${cid}/Quizzes`} className="btn btn-light float-end m-2" onClick={() => handleCancel()}>Cancel</Link>
                 <button onClick={handleSave} className="btn btn-danger m-2 float-end">Save</button>
             </div>
             {/* <pre>{JSON.stringify(quiz.questions, null, 2)}</pre> */}

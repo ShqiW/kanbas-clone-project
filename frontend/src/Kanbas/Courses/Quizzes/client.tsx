@@ -15,18 +15,9 @@ export const findQuizzesForCourse = async (courseId: any) => {
     return response.data;
 };
 
-// Question?
-// export const findQuizByQuizId = async (quizId: any) => {
-//     const response = await axios.get(`${QUIZZES_API}/${quizId}`)
-//     console.log('API Response:', response.data);
-//     return response.data;
-// }
 export const findQuizByQuizId = async (quizId: any) => {
-    const response = await axios.get(`${QUIZZES_API}/${quizId}`);
+    const response = await axios.get(`${QUIZZES_API}/${quizId}`)
     console.log('API Response:', response.data);
-    if (Array.isArray(response.data)) {
-        return response.data[0];
-    }
     return response.data;
 }
 
@@ -36,8 +27,13 @@ export const deleteQuiz = async (quizId: any) => {
 };
 
 export const updateQuiz = async (quiz: any) => {
-    const response = await axios.put(`${QUIZZES_API}/${quiz._id}`, quiz);
-    return response.data;
+    try {
+        const response = await axios.put(`${QUIZZES_API}/${quiz._id}`, quiz);
+        return response.data;
+    } catch (error) {
+        console.error('Error updating quiz:', error);
+        throw error;
+    }
 };
 
 export const updateHistory = async (qid: String, history: any) => {

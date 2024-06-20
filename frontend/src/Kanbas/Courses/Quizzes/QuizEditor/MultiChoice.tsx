@@ -76,11 +76,7 @@ export default function MultipleChoice() {
                     ))}
                 </div>
                 <div className="text-end">
-                    <span
-                        className="text-danger"
-                        style={{ cursor: 'pointer' }}
-                        onClick={handleAddAnswer}
-                    >
+                    <span className="text-danger" style={{ cursor: 'pointer' }} onClick={handleAddAnswer}>
                         <FaPlus /> Add Another Answer
                     </span>
                 </div>

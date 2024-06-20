@@ -9,7 +9,6 @@ export default function TrueFalse() {
 
     return (
         <div className="col-12 p-3">
-
             <div className="col-12 mb-3">
                 <label>Question:</label>
                 <textarea

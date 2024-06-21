@@ -133,7 +133,7 @@ export default function QuizDetailScreen() {
                                             <div className="form-check">
                                                 <input disabled key={`${i}${a.answer}`} id={`${i}${a.answer}`} className="form-check-input" type="radio" name={`${i}`} checked={'answer' in q && q.answer === j} />
                                                 <label className="form-check-label" htmlFor={`${i}${a.answer}`}>{a.answer}</label>
-                                                {(user.role === "STUDENT" && quiz.showCorrectAnswers || user.role == "FACULTY") &&
+                                                {(user.role === "STUDENT" && quiz.showCorrectAnswers && (!quiz.multipleAttempts || history[0].attempts >= quiz.attemptChance) || user.role == "FACULTY") &&
                                                     a.correct && <><span className="text-success"> (Correct)</span></>}
                                             </div>
 
@@ -143,21 +143,21 @@ export default function QuizDetailScreen() {
                                                 <label className="form-check-label" htmlFor={`${i}true`}>True</label>
 
 
-                                                {(user.role === "STUDENT" && quiz.showCorrectAnswers || user.role == "FACULTY") &&
+                                                {(user.role === "STUDENT" && quiz.showCorrectAnswers && (!quiz.multipleAttempts || history[0].attempts >= quiz.attemptChance) || user.role == "FACULTY") &&
                                                     q.trueFalseAnswer && <><span className="text-success"> (Correct)</span>
                                                 </>}
                                             </div>
                                             <div className="form-check">
                                                 <input disabled className="form-check-input" type="radio" name={`${i}`} key={`${i}false`} id={`${i}false`} checked={'answer' in q && !q.answer} />
                                                 <label className="form-check-label" htmlFor={`${i}false`}>False</label>
-                                                {(user.role === "STUDENT" && quiz.showCorrectAnswers || user.role == "FACULTY") &&
+                                                {(user.role === "STUDENT" && quiz.showCorrectAnswers && (!quiz.multipleAttempts || history[0].attempts >= quiz.attemptChance) || user.role == "FACULTY") &&
                                                     !q.trueFalseAnswer && <><span className="text-success"> (Correct)</span>
                                                 </>}
                                             </div>
                                         </div> : q.questionType === 'FILL_IN' ? <div>
                                             <label htmlFor={`${i}`} className="form-label">Answer:</label>
                                             <input disabled className="form-control" key={`${i}`} id={`${i}`} value={'answer' in q ? q.answer : ''} />
-                                            {(user.role === "STUDENT" && quiz.showCorrectAnswers || user.role == "FACULTY") && <>
+                                            {(user.role === "STUDENT" && quiz.showCorrectAnswers && (!quiz.multipleAttempts || history[0].attempts >= quiz.attemptChance) || user.role == "FACULTY") && <>
                                                 <div className='border rounded bg-gray text-success p-1 mt-1'>
                                                     Correct Answer:
                                                     {q.fillInBlankAnswers.map((answer: any, index: number) => (

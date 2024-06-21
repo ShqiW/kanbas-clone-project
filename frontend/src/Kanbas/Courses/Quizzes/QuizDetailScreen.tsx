@@ -125,7 +125,7 @@ export default function QuizDetailScreen() {
                                             <h4>{q.questionText}</h4>
                                         </div>
                                         <div className="col-2">
-                                            {q.correct ? q.points : 0} / {q.points}pts
+                                            {q.correct ? q.points : 0} / {q.points} pts
                                         </div>
                                     </div>
                                     <div className="row my-3">
@@ -133,8 +133,8 @@ export default function QuizDetailScreen() {
                                             <div className="form-check">
                                                 <input disabled key={`${i}${a.answer}`} id={`${i}${a.answer}`} className="form-check-input" type="radio" name={`${i}`} checked={'answer' in q && q.answer === j} />
                                                 <label className="form-check-label" htmlFor={`${i}${a.answer}`}>{a.answer}</label>
-                                                {user.role === "STUDENT" && quiz.showCorrectAnswers || user.role == "FACULTY" &&
-                                                    <> a.correct && <span className="text-success"> (Correct)</span></>}
+                                                {(user.role === "STUDENT" && quiz.showCorrectAnswers || user.role == "FACULTY") &&
+                                                    a.correct && <><span className="text-success"> (Correct)</span></>}
                                             </div>
 
                                         )) : q.questionType === 'TRUE_FALSE' ? <div>
@@ -143,18 +143,21 @@ export default function QuizDetailScreen() {
                                                 <label className="form-check-label" htmlFor={`${i}true`}>True</label>
 
 
-                                                {user.role === "STUDENT" && quiz.showCorrectAnswers || user.role == "FACULTY" && <>
-                                                    q.correct && <span className="text-success"> (Correct)</span>
+                                                {(user.role === "STUDENT" && quiz.showCorrectAnswers || user.role == "FACULTY") &&
+                                                    q.trueFalseAnswer && <><span className="text-success"> (Correct)</span>
                                                 </>}
                                             </div>
                                             <div className="form-check">
                                                 <input disabled className="form-check-input" type="radio" name={`${i}`} key={`${i}false`} id={`${i}false`} checked={'answer' in q && !q.answer} />
                                                 <label className="form-check-label" htmlFor={`${i}false`}>False</label>
+                                                {(user.role === "STUDENT" && quiz.showCorrectAnswers || user.role == "FACULTY") &&
+                                                    !q.trueFalseAnswer && <><span className="text-success"> (Correct)</span>
+                                                </>}
                                             </div>
                                         </div> : q.questionType === 'FILL_IN' ? <div>
                                             <label htmlFor={`${i}`} className="form-label">Answer:</label>
                                             <input disabled className="form-control" key={`${i}`} id={`${i}`} value={'answer' in q ? q.answer : ''} />
-                                            {user.role === "STUDENT" && quiz.showCorrectAnswers || user.role == "FACULTY" && <>
+                                            {(user.role === "STUDENT" && quiz.showCorrectAnswers || user.role == "FACULTY") && <>
                                                 <div className='border rounded bg-gray text-success p-1 mt-1'>
                                                     Correct Answer:
                                                     {q.fillInBlankAnswers.map((answer: any, index: number) => (

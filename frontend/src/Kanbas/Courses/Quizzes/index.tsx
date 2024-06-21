@@ -42,11 +42,11 @@ export default function Quizzes() {
             try {
                 let fetchedQuizzes = await findQuizzesForCourse(cid);
                 dispatch(setQuizzes(fetchedQuizzes));
-                let newFetchedQuizzes = JSON.parse(JSON.stringify(fetchedQuizzes))
                 fetchedQuizzes.map(async (q: any, i: number) => {
                     let history = await client.findHistoriesByQuizId(q._id)
+                    let newFetchedQuizzes = [...fetchedQuizzes]
                     if (history.length > 0) {
-                        newFetchedQuizzes[i].score = history[0].points
+                        newFetchedQuizzes[i] = {...newFetchedQuizzes[i], score: history[0].points}
                         dispatch(setQuizzes(newFetchedQuizzes));
                     }
                 })
@@ -125,10 +125,10 @@ export default function Quizzes() {
                                             <span style={{ fontWeight: "bold" }}>Due </span>
                                             {quiz.dueDate ? formatDate(quiz.dueDate) : 'N/A'}
 
-                                            {(quiz.questions.length > 0) ?
+                                            {(quiz.questions && quiz.questions.length > 0) ?
                                                 `| ${quiz.questions.reduce((addedPoints, { points }) => addedPoints + points, 0)} pts | ` : `0 pts |`
                                             }
-                                            {quiz.questions.length} Questions
+                                            {quiz.questions ? quiz.questions.length : 0} Questions
 
 
                                             {user && user.role === "STUDENT" && (

@@ -30,12 +30,11 @@ export default function Dashboard({
             <h1 id="wd-dashboard-title">Dashboard</h1>
             <hr />
             {
-                currentUser ? currentUser.role === "STUDENT" ? (
-                    <h5>Enroll in new courses
+                currentUser ? <div>
+                    <h5 className="my-3">Enroll in new courses
                         <Link to="/Kanbas/Courses/enroll" className="btn btn-primary float-end">Enroll</Link>
                     </h5>
-                ) : (
-                    <h5>New Course
+                    {currentUser.role == 'FACULTY' ? <h5 className="my-3">New Course
                         <button className="btn btn-primary float-end"
                             id="wd-add-new-course-click"
                             onClick={addNewCourse}>Add</button>
@@ -46,8 +45,9 @@ export default function Dashboard({
                         <br />
                         <input value={course.name} className="form-control mb-2" onChange={(e) => setCourse({ ...course, name: e.target.value })} />
                         <textarea value={course.description} className="form-control" onChange={(e) => setCourse({ ...course, description: e.target.value })} />
-                    </h5>
-                ) : null
+                    </h5> : null
+                    }
+                </div> : null
             }
             <hr />
 

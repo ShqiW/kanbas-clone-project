@@ -40,8 +40,16 @@ export default function Quizzes() {
     const fetchQuizzes = async () => {
         if (cid) {
             try {
-                const fetchedQuizzes = await findQuizzesForCourse(cid);
+                let fetchedQuizzes = await findQuizzesForCourse(cid);
                 dispatch(setQuizzes(fetchedQuizzes));
+                let newFetchedQuizzes = JSON.parse(JSON.stringify(fetchedQuizzes))
+                fetchedQuizzes.map(async (q: any, i: number) => {
+                    let history = await client.findHistoriesByQuizId(q._id)
+                    if (history.length > 0) {
+                        newFetchedQuizzes[i].score = history[0].points
+                        dispatch(setQuizzes(newFetchedQuizzes));
+                    }
+                })
             } catch (error) {
                 console.error("Error fetching quizzes:", error);
             }
@@ -123,9 +131,8 @@ export default function Quizzes() {
                                             {quiz.questions.length} Questions
 
 
-                                            {/* NEED UPDATE: if student took quiz, display score */}
                                             {user && user.role === "STUDENT" && (
-                                                <span style={{ fontWeight: "bold" }}>| Score uncompleted </span>
+                                                <span style={{ fontWeight: "bold" }}>| {'score' in quiz ? `${quiz.score} / ${quiz.points} pts` : 'No score yet'} </span>
                                             )}
                                         </div>
                                     </div>

@@ -25,7 +25,9 @@ export default function QuizDetailScreen() {
                     setLoading(false);
                 })
                 .catch(() => setLoading(false));
-            client.findHistoriesByQuizId(qid).then(hs => setHistory(hs)).catch(err => console.log(err))
+            client.findHistoriesByQuizId(qid).then(hs => {
+                setHistory(hs)
+            }).catch(err => console.log(err))
         }
     }, [qid, dispatch]);
 
@@ -50,7 +52,7 @@ export default function QuizDetailScreen() {
                         </button>
                     </div>
                 )}
-                {user && user.role === 'STUDENT' && (
+                {user && user.role === 'STUDENT' && (!quiz.multipleAttempts || history.length == 0 || quiz.multipleAttempts && quiz.attemptChance > history[0].attempts) && (
                     <button type="button" className="btn btn-sm rounded ps-3 pe-3 border" onClick={() => navigate(`/Kanbas/Courses/${cid}/Quizzes/${qid}/take`)}>
                         Take Quiz
                     </button>

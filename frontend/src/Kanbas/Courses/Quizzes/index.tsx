@@ -46,7 +46,7 @@ export default function Quizzes() {
                     let history = await client.findHistoriesByQuizId(q._id)
                     let newFetchedQuizzes = [...fetchedQuizzes]
                     if (history.length > 0) {
-                        newFetchedQuizzes[i] = {...newFetchedQuizzes[i], score: history[0].points}
+                        newFetchedQuizzes[i] = { ...newFetchedQuizzes[i], score: history[0].points }
                         dispatch(setQuizzes(newFetchedQuizzes));
                     }
                 })
@@ -126,13 +126,13 @@ export default function Quizzes() {
                                             {quiz.dueDate ? formatDate(quiz.dueDate) : 'N/A'}
 
                                             {(quiz.questions && quiz.questions.length > 0) ?
-                                                `| ${quiz.questions.reduce((addedPoints, { points }) => addedPoints + points, 0)} pts | ` : `0 pts |`
+                                                `| ${quiz.questions.reduce((addedPoints, { points }) => addedPoints + points, 0)} pts | ` : `| 0 pts | `
                                             }
                                             {quiz.questions ? quiz.questions.length : 0} Questions
 
 
                                             {user && user.role === "STUDENT" && (
-                                                <span style={{ fontWeight: "bold" }}>| {'score' in quiz ? `${quiz.score} / ${quiz.points} pts` : 'No score yet'} </span>
+                                                <span style={{ fontWeight: "bold" }}>| {'score' in quiz ? `${quiz.score} /  ${quiz.questions.reduce((addedPoints, { points }) => addedPoints + points, 0)} pts` : 'No score yet'} </span>
                                             )}
                                         </div>
                                     </div>

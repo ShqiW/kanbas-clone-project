@@ -1,8 +1,10 @@
 import { useDispatch, useSelector } from "react-redux";
 import { setQuestion } from "../reducer";
 import { FaPlus } from "react-icons/fa";
+import { Editor } from "@tinymce/tinymce-react";
 
 export default function MultipleChoice() {
+    const WYSIWYG_API = process.env.REACT_APP_WYSIWYG_API;
     const dispatch = useDispatch();
     const question = useSelector((state: any) => state.quizzesReducer.question);
 
@@ -37,10 +39,40 @@ export default function MultipleChoice() {
                 <div className="col-12 mb-3">
                     <p>Enter your question and multiple answers, then select the one correct answer.</p>
                     <label>Question:</label>
-                    <textarea
+                    {/* <textarea
                         value={question.questionText}
                         className="form-control mb-2"
                         onChange={(e) => dispatch(setQuestion({ ...question, questionText: e.target.value }))}
+                    /> */}
+                    {/* <Editor
+                        apiKey={WYSIWYG_API}
+                        value={question.questionText}
+                        onEditorChange={(newQuestionText, editor) => {
+                            dispatch(setQuestion({ ...question, questionText: newQuestionText }))
+                        }}
+                        initialValue="<p>Add multiple question text</p>"
+                        init={{
+                            height: 300,
+                            menubar: false,
+                            plugins: [
+                                'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
+                                'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
+                                'insertdatetime', 'media', 'table', 'code', 'help', 'wordcount'
+                            ],
+                            toolbar: 'undo redo | blocks | ' +
+                                'bold italic forecolor | alignleft aligncenter ' +
+                                'alignright alignjustify | bullist numlist outdent indent | ' +
+                                'removeformat | help',
+                            content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }',
+                            zIndex: 1
+                        }}
+                    /> */}
+                    <Editor
+                        apiKey={WYSIWYG_API}
+                        value={question.questionText}
+                        onEditorChange={(newQuestionText, editor) => {
+                            dispatch(setQuestion({ ...question, questionText: newQuestionText }))
+                        }}
                     />
                 </div>
                 <br />

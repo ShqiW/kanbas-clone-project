@@ -1,11 +1,11 @@
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import * as client from "../client"
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { setQuiz, updateQuiz, deleteQuiz } from "../reducer";
 import Select from 'react-select'
 import { parseDateString } from "../../Assignments/parseDateString";
-// import { Editor } from "@tinymce/tinymce-react";
+import { Editor } from "@tinymce/tinymce-react";
 
 
 export default function DetailsEditor() {
@@ -14,6 +14,7 @@ export default function DetailsEditor() {
     const { cid, qid } = useParams();
     const navigate = useNavigate();
     const quiz = useSelector((state: any) => state.quizzesReducer.quiz);
+
 
     useEffect(() => {
         if (qid) {
@@ -57,22 +58,15 @@ export default function DetailsEditor() {
         navigate(`/Kanbas/Courses/${cid}/Quizzes`);
     };
 
+
     return (
         <div className="container">
             Details
             <input value={quiz.name} className="form-control mb-2" onChange={(e) => dispatch(setQuiz({ ...quiz, name: e.target.value }))} />
             <p>Quiz Instructions:</p>
-            {/* <textarea
-                value={quiz.description}
-                className="form-control mb-2"
-                rows={5}
-                placeholder="Enter quiz description..."
-                onChange={(e) => dispatch(setQuiz({ ...quiz, description: e.target.value }))}
-            /> */}
 
-            {/* Don't Delete */}
             {/* Error: tinymce can only be initialised when in a document */}
-            {/* <Editor
+            <Editor
                 apiKey={WYSIWYG_API}
                 value={quiz.description}
                 onEditorChange={(newDescription, editor) => {
@@ -92,9 +86,8 @@ export default function DetailsEditor() {
                         'alignright alignjustify | bullist numlist outdent indent | ' +
                         'removeformat | help',
                     content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }'
-                }} 
-            />*/}
-
+                }}
+            />
 
             <br /> <br /> <br /> <br /> <br />
             <div>

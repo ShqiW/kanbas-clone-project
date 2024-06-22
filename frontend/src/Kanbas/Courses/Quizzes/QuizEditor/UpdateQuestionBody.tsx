@@ -32,6 +32,12 @@ function QuestionHeader() {
                             dispatch(setQuestion({ ...question, questionType: e.value }));
                         }
                     }}
+                    styles={{
+                        container: (provided) => ({
+                            ...provided,
+                            zIndex: 1000
+                        })
+                    }}
                 />
             </div>
             <div className="col-1"></div>

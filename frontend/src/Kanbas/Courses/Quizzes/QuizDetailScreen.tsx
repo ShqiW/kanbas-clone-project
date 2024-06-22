@@ -21,7 +21,9 @@ export default function QuizDetailScreen() {
             setLoading(true);
             client.findQuizByQuizId(qid)
                 .then((quiz) => {
-                    dispatch(setQuiz(quiz));
+                    // dispatch(setQuiz(quiz));
+                    const totalPoints = quiz.questions.reduce((addedPoints, { points }) => addedPoints + points, 0);
+                    dispatch(setQuiz({ ...quiz, points: totalPoints }));
                     setLoading(false);
                 })
                 .catch(() => setLoading(false));
@@ -112,7 +114,7 @@ export default function QuizDetailScreen() {
             <h2>History</h2>
             {history.length > 0 ? <div className='container'>
                 <div className='row'>
-                    <h4>total points: {history[0].points}</h4>
+                    <h4>Score: {history[0].points}</h4>
                 </div>
                 <div className='row'>
                     {history[0].questions.map((q: any, i: number) => {
@@ -145,14 +147,14 @@ export default function QuizDetailScreen() {
 
                                                 {(user.role === "STUDENT" && quiz.showCorrectAnswers && (!quiz.multipleAttempts || history[0].attempts >= quiz.attemptChance) || user.role == "FACULTY") &&
                                                     q.trueFalseAnswer && <><span className="text-success"> (Correct)</span>
-                                                </>}
+                                                    </>}
                                             </div>
                                             <div className="form-check">
                                                 <input disabled className="form-check-input" type="radio" name={`${i}`} key={`${i}false`} id={`${i}false`} checked={'answer' in q && !q.answer} />
                                                 <label className="form-check-label" htmlFor={`${i}false`}>False</label>
-                                                {(user.role === "STUDENT" && quiz.showCorrectAnswers && (!quiz.multipleAttempts || history[0].attempts >= quiz.attemptChance) || user.role == "FACULTY") &&
+                                                {(user.role === "STUDENT" && quiz.showCorrectAnswers && (!quiz.multipleAttempts || history[0].attempts >= quiz.attemptChance) || user.role === "FACULTY") &&
                                                     !q.trueFalseAnswer && <><span className="text-success"> (Correct)</span>
-                                                </>}
+                                                    </>}
                                             </div>
                                         </div> : q.questionType === 'FILL_IN' ? <div>
                                             <label htmlFor={`${i}`} className="form-label">Answer:</label>
@@ -176,6 +178,7 @@ export default function QuizDetailScreen() {
                 </div>
             </div> : null
             }
+            <pre>{JSON.stringify(quiz, null, 2)}</pre>
         </div >
     );
 }

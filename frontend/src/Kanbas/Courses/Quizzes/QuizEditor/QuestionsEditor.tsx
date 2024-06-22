@@ -136,7 +136,7 @@ export default function QuestionsEditor() {
                 </button>
             </div>
             <hr />
-            {quiz.questions.map((q, i) => (
+            {/* {quiz.questions.map((q, i) => (
                 <div key={i} className="row align-items-center mb-2">
                     <div className="col-md-8">
                         <strong>{q.title}</strong> - {q.questionText}
@@ -147,12 +147,30 @@ export default function QuestionsEditor() {
                         </button>
                     </div>
                 </div>
-            ))}
+            ))} */}
+
+            {quiz.questions && quiz.questions.length > 0 && (
+                quiz.questions.map((q, i) => (
+                    <div key={i} className="row align-items-center mb-2">
+                        <div className="col-md-8">
+                            <strong>{q.title}</strong> - <span dangerouslySetInnerHTML={{ __html: q.questionText }} />
+                        </div>
+                        <div className="col-md-4 text-end">
+                            <button className="btn btn-light" onClick={() => handleEditQuestion(i)}>
+                                <FaEdit /> Edit
+                            </button>
+                        </div>
+                    </div>
+                ))
+            )}
+
+
+
             <div className="col d-flex justify-content-center p-3 m-3">
                 <Link to={`/Kanbas/Courses/${cid}/Quizzes`} className="btn btn-light float-end m-2" onClick={() => handleCancel()}>Cancel</Link>
                 <button onClick={handleSave} className="btn btn-danger m-2 float-end">Save</button>
             </div>
-            {/* <pre>{JSON.stringify(quiz.questions, null, 2)}</pre> */}
+            <pre>{JSON.stringify(quiz.questions, null, 2)}</pre>
         </div>
     );
 }

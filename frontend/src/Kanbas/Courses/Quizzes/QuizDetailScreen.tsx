@@ -124,7 +124,7 @@ export default function QuizDetailScreen() {
                                 <div className="container my-3">
                                     <div className="row my-3">
                                         <div className="col">
-                                            <h4>{q.questionText}</h4>
+                                            <div dangerouslySetInnerHTML={{ __html: q.questionText }} />
                                         </div>
                                         <div className="col-2">
                                             {q.correct ? q.points : 0} / {q.points} pts
@@ -178,7 +178,7 @@ export default function QuizDetailScreen() {
                 </div>
             </div> : null
             }
-            <pre>{JSON.stringify(quiz, null, 2)}</pre>
+            {/* <pre>{JSON.stringify(quiz, null, 2)}</pre> */}
         </div >
     );
 }

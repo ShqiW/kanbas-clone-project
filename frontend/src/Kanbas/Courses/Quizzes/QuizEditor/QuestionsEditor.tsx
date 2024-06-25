@@ -170,7 +170,7 @@ export default function QuestionsEditor() {
                 <Link to={`/Kanbas/Courses/${cid}/Quizzes`} className="btn btn-light float-end m-2" onClick={() => handleCancel()}>Cancel</Link>
                 <button onClick={handleSave} className="btn btn-danger m-2 float-end">Save</button>
             </div>
-            <pre>{JSON.stringify(quiz.questions, null, 2)}</pre>
+            {/* <pre>{JSON.stringify(quiz.questions, null, 2)}</pre> */}
         </div>
     );
 }
